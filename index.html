@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>WattWise AI</title>
+
+<style>
+
+body {
+    font-family: Arial;
+    background:#f2f7f5;
+    padding:30px;
+}
+
+.box {
+    background:white;
+    max-width:600px;
+    margin:auto;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 15px gray;
+}
+
+h1 {
+    text-align:center;
+    color:#1b7f5a;
+}
+
+.subtitle {
+    text-align:center;
+    color:#555;
+}
+
+.chat-box {
+    margin-top:20px;
+    height:300px;
+    overflow-y:auto;
+    border:1px solid #ddd;
+    padding:15px;
+    border-radius:10px;
+    background:#fafafa;
+}
+
+
+.user {
+    background:#d8f3dc;
+    padding:10px;
+    margin:10px;
+    border-radius:10px;
+    text-align:right;
+}
+
+
+.ai {
+    background:#e3f2fd;
+    padding:10px;
+    margin:10px;
+    border-radius:10px;
+    text-align:left;
+}
+
+
+.input-area {
+    margin-top:20px;
+    display:flex;
+}
+
+
+input {
+    flex:1;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid gray;
+}
+
+
+button {
+    margin-left:10px;
+    padding:12px 20px;
+    background:#1b7f5a;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+
+button:hover {
+    opacity:0.8;
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h1>⚡ WattWise AI</h1>
+
+<p class="subtitle">
+Smart Energy Assistant
+</p>
+
+
+<div id="chat" class="chat-box">
+
+<div class="ai">
+Hello! I am WattWise AI. Ask me about saving electricity.
+</div>
+
+</div>
+
+
+
+<div class="input-area">
+
+<input id="question"
+placeholder="Ask your energy question">
+
+
+<button onclick="sendMessage()">
+Send
+</button>
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+function sendMessage(){
+
+
+let question =
+document.getElementById("question").value;
+
+
+if(question=="")
+{
+    return;
+}
+
+
+
+let chat =
+document.getElementById("chat");
+
+
+
+chat.innerHTML +=
+"<div class='user'>" + question + "</div>";
+
+
+
+fetch("/chat",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+message:question
+
+})
+
+
+})
+
+.then(response=>response.json())
+
+
+.then(data=>{
+
+
+chat.innerHTML +=
+
+"<div class='ai'>" 
++ data.reply.replace(/\n/g,"<br>")
++ "</div>";
+
+
+chat.scrollTop = chat.scrollHeight;
+
+
+})
+
+
+.catch(error=>{
+
+
+chat.innerHTML +=
+
+"<div class='ai'>Server connection error</div>";
+
+
+});
+
+
+document.getElementById("question").value="";
+
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
